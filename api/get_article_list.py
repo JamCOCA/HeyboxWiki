@@ -9,14 +9,9 @@ from cookie_local import load_cookie_local
 def api_get_article_list(
     timeout: float = 15,
 ) -> Dict[str, Any]:
-    """最简单的接口测试封装：请求 heybox wiki/get_article_list。
-
-    说明：
-    - 这里使用 requests（你已经安装了）
-    - 按你提供的 URL，把所有 query 参数都加进来
-    - 返回 JSON（如果服务端不是 JSON，会抛异常）
     """
-
+        获取指定 wiki_id 的文章列表。
+    """
     url = "https://api.xiaoheihe.cn/wiki/get_article_list/"
     params = {
         "app": "heybox",
@@ -31,7 +26,7 @@ def api_get_article_list(
         "nonce": "9F295E7B02CE993009DC1F8B66883FDB",
         "wiki_id": "238960",
         "offset": "0",
-        "limit": "10",
+        "limit": "20",
     }
 
     # 按你抓包的请求头尽量补全
@@ -72,7 +67,7 @@ if __name__ == "__main__":
     # 简单运行示例：打印前 2000 字符，避免控制台刷屏
     try:
         data = api_get_article_list()
-        print(json.dumps(data, ensure_ascii=False, indent=2)[:2000])
+        print(json.dumps(data, ensure_ascii=False, indent=2))
     except requests.HTTPError as e:
         # HTTP 状态码异常时，把响应体也打出来，方便判断是否“非法请求/鉴权失败”
         resp = getattr(e, "response", None)
