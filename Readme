@@ -1,0 +1,8 @@
+使用模板创建按词条，通过Create_artical,传参如下；
+模板使用{{pre|通货样式测试}}调用；
+	
+article_type	"1"
+game_id	"238960"
+name	"通货样式模板"
+reference	"[]"
+text	"<p><br></p>{{pre|通货样式测试}}\n<p><br></p>\n<p><br></p>\n<p><br></p>"

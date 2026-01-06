@@ -1,0 +1,185 @@
+/*
+  最简版：只保留“卡片”相关样式。
+  - 不设置页面背景/主题
+  - 不写 body/html/* 等全局选择器，避免影响宿主页面
+*/
+
+.card,
+.card * {
+  box-sizing: border-box;
+}
+
+.card {
+  width: min(760px, 94vw);
+  color: rgba(255, 255, 255, 0.86);
+  font-family: system-ui, -apple-system, "Segoe UI", Arial, "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  background: rgba(58, 60, 66, 0.82);
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: 10px;
+  padding: 1px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.06));
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+.card__header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 18px 12px;
+}
+
+.card__header::before {
+  content: "";
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  top: 8px;
+  height: 44px;
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(40, 32, 18, 0.62), rgba(24, 20, 14, 0.14));
+  border: 1px solid rgba(215, 186, 126, 0.22);
+  box-shadow: inset 0 0 0 1px rgba(120, 96, 54, 0.24), 0 10px 26px rgba(0, 0, 0, 0.22);
+}
+
+.card__titleWrap {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  text-align: center;
+}
+
+.card__title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.90);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+}
+
+.card__icon {
+  position: relative;
+  z-index: 1;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+}
+
+.card__iconRing {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  border: 2px solid rgba(170, 195, 255, 0.38);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.48), 0 0 18px rgba(65, 120, 255, 0.22);
+}
+
+.card__iconCore {
+  position: absolute;
+  inset: 6px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.18), rgba(20, 18, 30, 0.92));
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.card__body {
+  padding: 14px 20px 18px;
+  /* 除主题外整体字号下调，突出蓝色主题 */
+  font-size: 13px;
+  /* 宿主页面常给 p 加缩进/左对齐，这里统一以居中为主 */
+  text-align: center;
+}
+
+.kv {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 12px;
+  /* KV 信息区保持左对齐 */
+  text-align: left;
+}
+
+.kv__row {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+}
+
+/* “通货”作为分类标题：更小更淡 */
+.kv__row:first-child .kv__label {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.44);
+  letter-spacing: 0.6px;
+}
+
+.kv__label {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 12px;
+}
+
+.kv__value {
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 12px;
+}
+
+.affix {
+  /* 单独框选主题行，并缩小一点 */
+  display: block;
+  width: fit-content;
+  margin: 10px auto;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(118, 178, 255, 0.28);
+  background: rgba(0, 0, 0, 0.10);
+  text-align: center;
+  color: rgba(118, 178, 255, 0.95);
+  font-size: 14px;
+  font-weight: 650;
+  letter-spacing: 0.2px;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.18);
+}
+
+.card .desc {
+  margin: 6px 0 0;
+  color: rgba(255, 255, 255, 0.62);
+  line-height: 1.6;
+  font-size: 12px;
+  width: 100%;
+  text-align: center !important;
+  /* 覆盖宿主的段落缩进/内边距，避免“看起来偏移” */
+  text-indent: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.kbd {
+  display: inline-block;
+  padding: 0 6px;
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 12px;
+  letter-spacing: 0.6px;
+}
+
+.en {
+  margin: 12px 0 0;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.52);
+  font-weight: 700;
+  letter-spacing: 1.8px;
+  font-size: 11px;
+}
