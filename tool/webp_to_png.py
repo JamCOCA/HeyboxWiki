@@ -1,46 +1,57 @@
-
 from __future__ import annotations
 
+import os
 from pathlib import Path
+from typing import Union
 
-from PIL import Image
+
+PathLike = Union[str, os.PathLike]
 
 
-def webp_to_png(input_path: str | Path, output_path: str | Path) -> None:
-	"""Convert a .webp image to .png with alpha preserved.
+def convert_webp_to_png(webp_path: PathLike, output_png_path: PathLike) -> str:
+	"""将 WebP 转换为 PNG，保留透明通道。
 
-	Args:
-		input_path: Source .webp file path.
-		output_path: Target .png file path.
+	参数：
+		webp_path: 输入 webp 文件路径
+		output_png_path: 输出 png 文件路径
+
+	返回：
+		输出 png 的绝对路径（字符串）
+
+	说明：
+		- 若 webp 包含 alpha，会以 RGBA 保存。
+		- 若不包含 alpha，会以 RGB 保存。
+		- 会自动创建输出目录。
 	"""
 
-	input_path = Path(input_path)
-	output_path = Path(output_path)
+	webp_path = Path(webp_path)
+	output_png_path = Path(output_png_path)
 
-	if not input_path.exists():
-		raise FileNotFoundError(f"Input file not found: {input_path}")
+	if not webp_path.exists():
+		raise FileNotFoundError(f"输入文件不存在: {webp_path}")
 
-	output_path.parent.mkdir(parents=True, exist_ok=True)
+	output_png_path.parent.mkdir(parents=True, exist_ok=True)
 
-	with Image.open(input_path) as image:
-		# For transparency, ensure RGBA.
-		# (If the source has no alpha, this still produces a valid PNG.)
-		if image.mode != "RGBA":
-			image = image.convert("RGBA")
-		image.save(output_path, format="PNG")
+	try:
+		from PIL import Image
+	except ImportError as e:
+		raise ImportError(
+			"缺少依赖 Pillow，请先安装：pip install Pillow"
+		) from e
 
+	# 打开 WebP
+	with Image.open(webp_path) as im:
+		# 有些 WebP 会是 P 模式/LA 等，这里统一转换以确保保存时带 alpha
+		has_alpha = (
+			(im.mode in ("RGBA", "LA"))
+			or ("transparency" in getattr(im, "info", {}))
+		)
+		im_converted = im.convert("RGBA" if has_alpha else "RGB")
+		im_converted.save(output_png_path, format="PNG")
 
-def main(argv: list[str] | None = None) -> int:
-	import argparse
+	return str(output_png_path.resolve())
 
-	parser = argparse.ArgumentParser(description="Convert a .webp image to .png (preserve alpha).")
-	parser.add_argument("input", help="Input .webp path")
-	parser.add_argument("output", help="Output .png path")
-	args = parser.parse_args(argv)
-
-	webp_to_png(args.input, args.output)
-	return 0
 
 
 if __name__ == "__main__":
-	raise SystemExit(main())
+	convert_webp_to_png("Artwork\Icon\GraftedAugmentation.webp", "Artwork\Icon\GraftedAugmentation.png")
