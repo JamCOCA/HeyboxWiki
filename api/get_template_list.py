@@ -3,7 +3,7 @@ from typing import Any, Dict
 
 import requests
 
-from cookie_local import load_cookie_local
+from api.cookie_local import load_cookie_local
 
 
 def api_get_template_list(

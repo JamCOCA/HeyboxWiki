@@ -8,12 +8,12 @@ from typing import Union
 PathLike = Union[str, os.PathLike]
 
 
-def convert_webp_to_png(webp_path: PathLike, output_png_path: PathLike) -> str:
+def convert_webp_to_png(webp_path: PathLike, output_dir: PathLike) -> str:
 	"""将 WebP 转换为 PNG，保留透明通道。
 
 	参数：
 		webp_path: 输入 webp 文件路径
-		output_png_path: 输出 png 文件路径
+		output_dir: 输出目录（会在此目录下生成同名 .png）
 
 	返回：
 		输出 png 的绝对路径（字符串）
@@ -25,12 +25,13 @@ def convert_webp_to_png(webp_path: PathLike, output_png_path: PathLike) -> str:
 	"""
 
 	webp_path = Path(webp_path)
-	output_png_path = Path(output_png_path)
+	output_dir = Path(output_dir)
 
 	if not webp_path.exists():
 		raise FileNotFoundError(f"输入文件不存在: {webp_path}")
 
-	output_png_path.parent.mkdir(parents=True, exist_ok=True)
+	output_dir.mkdir(parents=True, exist_ok=True)
+	output_png_path = output_dir / f"{webp_path.stem}.png"
 
 	try:
 		from PIL import Image
@@ -54,4 +55,9 @@ def convert_webp_to_png(webp_path: PathLike, output_png_path: PathLike) -> str:
 
 
 if __name__ == "__main__":
-	convert_webp_to_png("Artwork\Icon\GraftedAugmentation.webp", "Artwork\Icon\GraftedAugmentation.png")
+	# Windows 路径建议用 Path 或 raw string，避免反斜杠转义
+	out = convert_webp_to_png(
+		"Artwork/Icon/webp/CurrencyIdentification.webp",
+		"Artwork/Icon/png",
+	)
+	print(out)

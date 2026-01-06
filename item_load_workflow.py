@@ -5,6 +5,9 @@ import re
 
 import tool.fetch_poedb_item_popup
 import tool.render_template
+import tool.download_pic
+import tool.webp_to_png
+import api.create_template
 
 def json_to_list(json_path, encoding: str = "utf-8") -> list[Any]:
     """读取 JSON 列表文件。"""
@@ -23,17 +26,19 @@ def convert_poedb_img(url: str) -> str:
     return f"https://cdn.max-c.com/wiki/238960/{name}.png?v=1"
 
 if __name__ == "__main__":
+    
     temp_list = []
     # 读取poedb所有条目
     data = json_to_list("data/20260106poedb.json")
     for x in data:
         if x.get("desc") == "可堆叠通货":
             temp_list.append(x)
-    _l = temp_list[:2]
+    _l = temp_list[:1]
+    # 遍历目标列表
     for item in _l:
-        print(item)
+        # 获取poedb物品信息
         o = tool.fetch_poedb_item_popup.fetch_poedb_item_lines(f"https://poedb.tw/cn/{item['value']}")
-        print(o)
+        # 渲染HTML
         out = tool.render_template.render_item_popup(
             "template/Item/item_popup.html",
             title=f"{o[0]}",
@@ -45,5 +50,22 @@ if __name__ == "__main__":
             icon_url=convert_poedb_img(o[7]),
             out_path=f"tmp/{o[6]}.html",
         )
-        print("wrote", out)
+        
+        # 下载图片
+        t = tool.download_pic.download_image(o[7],"tmp\images\webp")
+        print(t)
+
+        # 转换图片
+        _t = tool.webp_to_png.convert_webp_to_png(t,"tmp/images/png")
+
+        # 读取CSS
+        cs = open("template/Item/item_popup.css","r",encoding="utf-8").read()
+        _out = open(out,"r",encoding="utf-8").read()
+
+        # 上传模板
+        api.create_template.api_create_template(
+            name=f"{o[0]}",
+            content=_out,
+            css=cs,
+        )
 

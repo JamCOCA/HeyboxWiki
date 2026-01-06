@@ -3,7 +3,7 @@ from typing import Any, Dict, Optional
 
 import requests
 
-from cookie_local import load_cookie_local
+from api.cookie_local import load_cookie_local
 
 
 def api_get_img_list(
