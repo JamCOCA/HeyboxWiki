@@ -8,4 +8,4 @@ reference	"[]"
 text	"<p><br></p>{{pre|通货样式测试}}\n<p><br></p>\n<p><br></p>\n<p><br></p>"
 
 使用浏览器自动化
-playwright install chromium
+python -m playwright install chromium

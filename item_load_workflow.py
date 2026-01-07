@@ -8,6 +8,7 @@ import tool.render_template
 import tool.download_pic
 import tool.webp_to_png
 import api.create_template
+import api.create_article
 
 def json_to_list(json_path, encoding: str = "utf-8") -> list[Any]:
     """读取 JSON 列表文件。"""
@@ -33,26 +34,27 @@ if __name__ == "__main__":
     for x in data:
         if x.get("desc") == "可堆叠通货":
             temp_list.append(x)
-    _l = temp_list[:1]
+    _l = temp_list[12:]
     # 遍历目标列表
     for item in _l:
         # 获取poedb物品信息
         o = tool.fetch_poedb_item_popup.fetch_poedb_item_lines(f"https://poedb.tw/cn/{item['value']}")
+        print(o)
         # 渲染HTML
         out = tool.render_template.render_item_popup(
             "template/Item/item_popup.html",
             title=f"{o[0]}",
             category=f"{o[1]}",
             stack=f"{o[3]}",
-            affix=f"{o[4]}",
-            desc_html=f"{o[5]}",
-            en=f"{o[6]}",
-            icon_url=convert_poedb_img(o[7]),
-            out_path=f"tmp/{o[6]}.html",
+            affix=f"{o[-4]}",
+            desc_html=f"{o[-3]}",
+            en=f"{o[-2]}",
+            icon_url=convert_poedb_img(o[-1]),
+            out_path=f"tmp/{o[-2]}.html",
         )
         
         # 下载图片
-        t = tool.download_pic.download_image(o[7],"tmp\images\webp")
+        t = tool.download_pic.download_image(o[-1],"tmp/images/webp")
         print(t)
 
         # 转换图片
@@ -68,4 +70,11 @@ if __name__ == "__main__":
             content=_out,
             css=cs,
         )
+
+        # 发布文章
+        api.create_article.api_create_article(
+            title=f"{o[0]}",
+            content="<p><br></p>{{pre|"+ o[0] + "}}\n<p><br></p>\n<p><br></p>\n<p><br></p>",
+        )
+
 
